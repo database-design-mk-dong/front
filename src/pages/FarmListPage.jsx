@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api, { setAuthToken } from '../axios';
+import api from '../axios';
 import FarmModal from './FarmModal';
 
 const FarmListPage = () => {
@@ -31,7 +31,7 @@ const FarmListPage = () => {
             });
 
             // 새로운 토큰 설정
-            setAuthToken(response.data.newToken);
+            //setAuthToken(response.data.newToken);
 
             // 농장 데이터를 farm-detail 페이지로 전달
             navigate('/farm-detail', { state: { farmData: response.data } });

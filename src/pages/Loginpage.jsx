@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // useNavigate 훅 import
-import api, { setAuthToken } from '../axios';
-import { useDispatch } from "react-redux";
+// import { useSelector, useDispatch } from "react-redux";
+import api from '../axios';
 // 커스텀 axios 객체 및 setAuthToken 함수 import
 
 
@@ -11,8 +11,10 @@ const LoginPage = () => {
         email: '',
         password: '',
     });
+    // const search = useSelector((state) => state)
+
     const navigate = useNavigate(); // useNavigate 훅 초기화
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,14 +29,14 @@ const LoginPage = () => {
                 alert('로그인 성공!');
                 console.log('Access Token:', response.data.data.accessToken);
                 console.log('Refresh Token:', response.data.data.refreshToken);
-
-                dispatch({ type:"login", payload:response.data.data})
+                //
+                // dispatch({ type:"login", payload:response.data.data})
                 console.log(response.data.data);
-                localStorage.setItem("access_token", response.data.data.access_token);
-                localStorage.setItem("refresh_token", response.data.data.refresh_token);
+                localStorage.setItem("access_token", response.data.data.accessToken);
+                localStorage.setItem("refresh_token", response.data.data.refreshToken);
                 console.log(response.data.data);
-                // Axios에 토큰 저장
-                setAuthToken(response.data.data.accessToken);
+                // // Axios에 토큰 저장
+                // setAuthToken(response.data.data.accessToken);
 
                 // farms 페이지로 이동
                 navigate('/farms');
