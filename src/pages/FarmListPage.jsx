@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api, { setAuthToken } from '../axios';
 import FarmModal from './FarmModal';
 
 const FarmListPage = () => {
     const [farms, setFarms] = useState([]);
-    const [selectedFarm, setSelectedFarm] = useState(null);
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState(false); // showModal과 setShowModal 정의
+    const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate
 
     useEffect(() => {
         const fetchFarms = async () => {
@@ -20,9 +21,24 @@ const FarmListPage = () => {
         fetchFarms();
     }, []);
 
-    const handleFarmSelect = (farmID) => {
-        setSelectedFarm(farmID);
-        alert(`농장 ${farmID}이 선택되었습니다.`);
+    const handleFarmSelect = async (farmID) => {
+        try {
+            // farmID를 쿼리 파라미터로 전달
+            const response = await api.get(`/farm/getfarm/?farmID=${farmID}`, {
+                headers: {
+                    Authorization: api.defaults.headers.common['Authorization'], // 기존 토큰 사용
+                },
+            });
+
+            // 새로운 토큰 설정
+            setAuthToken(response.data.newToken);
+
+            // 농장 데이터를 farm-detail 페이지로 전달
+            navigate('/farm-detail', { state: { farmData: response.data } });
+        } catch (error) {
+            console.error('농장 선택 오류:', error.message);
+            alert('농장 선택에 실패했습니다. 다시 시도해주세요.');
+        }
     };
 
     return (

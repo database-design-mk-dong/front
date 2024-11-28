@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import api from '../axios'; // 커스텀 axios 객체 import
+import { useNavigate } from 'react-router-dom'; // useNavigate 훅 import
+import api, { setAuthToken } from '../axios'; // 커스텀 axios 객체 및 setAuthToken 함수 import
 
 const LoginPage = () => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
+
+    const navigate = useNavigate(); // useNavigate 훅 초기화
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -14,12 +17,18 @@ const LoginPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // api 객체를 사용해 요청 전송
+            // API 요청
             const response = await api.post('/users/login', formData);
             if (response.status === 200) {
                 alert('로그인 성공!');
-                console.log('Access Token:', response.data.access_token);
-                console.log('Refresh Token:', response.data.refresh_token);
+                console.log('Access Token:', response.data.data.accessToken);
+                console.log('Refresh Token:', response.data.data.refreshToken);
+
+                // Axios에 토큰 저장
+                setAuthToken(response.data.data.accessToken);
+
+                // farms 페이지로 이동
+                navigate('/farms');
             }
         } catch (error) {
             if (error.response) {
