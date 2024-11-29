@@ -23,11 +23,18 @@ const FarmModal = ({ onClose }) => {
     const handleCreateFarm = async (e) => {
         e.preventDefault();
         try {
+            // DeviceListRequestDto 구조에 맞는 객체 배열 생성
+            const deviceList = [
+                { device: 'Airconditioner' },
+                { device: 'Humidifier' },
+                { device: 'Fertilizer' },
+            ];
+
             // 농장 생성 API 호출
-            const createFarmResponse = await api.post('/farm/createfarm', {
+            const createFarmResponse = await api.post('/farm/createFarm', {
                 farmName: formData.farmName,
                 cropName: formData.cropName,
-                devices: ['Airconditioner', 'Humidifier', 'Fertilizer'], // 하드코딩된 devices
+                devices: deviceList, // 객체 리스트로 전달
             });
 
             alert('농장이 성공적으로 생성되었습니다.');
@@ -35,9 +42,14 @@ const FarmModal = ({ onClose }) => {
             onClose();
         } catch (error) {
             console.error('농장 생성 오류:', error.message);
+            if (error.response && error.response.data) {
+                console.error('서버 응답:', error.response.data);
+            }
             alert('농장 생성에 실패했습니다. 다시 시도해주세요.');
         }
     };
+
+
 
     return (
         <div style={{ border: '1px solid black', padding: '20px', position: 'absolute', background: 'white' }}>
