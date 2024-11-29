@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import api from '../axios';
+import React, { useState, useEffect } from 'react';
 
 const CropRecommendationModal = ({ onClose, onRecommend }) => {
     const [inputData, setInputData] = useState({
@@ -12,6 +11,17 @@ const CropRecommendationModal = ({ onClose, onRecommend }) => {
         rainfall: '',
     });
 
+    // 마운트 상태 관리
+    const [isMounted, setIsMounted] = useState(true);
+
+    useEffect(() => {
+        // 컴포넌트 마운트 상태 관리
+        setIsMounted(true);
+        return () => {
+            setIsMounted(false);
+        };
+    }, []);
+
     const handleChange = (e) => {
         setInputData({ ...inputData, [e.target.name]: e.target.value });
     };
@@ -19,16 +29,49 @@ const CropRecommendationModal = ({ onClose, onRecommend }) => {
     const handleRecommend = async (e) => {
         e.preventDefault();
         try {
-            // 작물 추천 API 호출
-            const response = await api.post('/crop-selection', inputData);
-            alert('작물 추천이 완료되었습니다.');
-            onRecommend(response.data); // 추천 결과 부모 컴포넌트로 전달
+            const response = await fetch('http://localhost:8000/environment/crop_selection', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(inputData),
+            });
+
+            if (!response.ok) {
+                throw new Error('API 요청 실패');
+            }
+
+            const responseData = await response.json();
+
+            console.log('API 응답 데이터:', responseData);
+
+            // 추천 작물 추출 (확률이 가장 높은 작물 선택)
+            const entries = Object.entries(responseData);
+            const bestRecommendation = entries.sort((a, b) => b[1] - a[1])[0]; // 확률 내림차순 정렬 후 첫 번째
+            const [recommendedCrop, probability] = bestRecommendation || ['추천 없음', 0];
+
+            // 부모 컴포넌트로 전달
+            onRecommend({
+                cropName: recommendedCrop, // 추천 작물 이름
+                probability, // 확률
+                N: inputData.N || 0,
+                P: inputData.P || 0,
+                K: inputData.K || 0,
+                temperature: inputData.temperature || 0,
+                humidity: inputData.humidity || 0,
+                ph: inputData.ph || 0,
+                rainfall: inputData.rainfall || 0,
+            });
+
             onClose(); // 모달 닫기
         } catch (error) {
             console.error('작물 추천 오류:', error.message);
-            alert('작물 추천에 실패했습니다. 다시 시도해주세요.');
+            alert(`작물 추천에 실패했습니다: ${error.message}`);
         }
     };
+
+
+
 
     return (
         <div style={{ border: '1px solid black', padding: '20px', position: 'absolute', background: 'white' }}>
