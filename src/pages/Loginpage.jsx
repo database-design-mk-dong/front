@@ -1,20 +1,15 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // useNavigate 훅 import
-// import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from 'react-router-dom';
 import api from '../axios';
-// 커스텀 axios 객체 및 setAuthToken 함수 import
-
-
+import styles from './Login.module.css';
 
 const LoginPage = () => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
-    // const search = useSelector((state) => state)
 
-    const navigate = useNavigate(); // useNavigate 훅 초기화
-    // const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,22 +18,14 @@ const LoginPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // API 요청
             const response = await api.post('/users/login', formData);
             if (response.status === 200) {
                 alert('로그인 성공!');
                 console.log('Access Token:', response.data.data.accessToken);
                 console.log('Refresh Token:', response.data.data.refreshToken);
-                //
-                // dispatch({ type:"login", payload:response.data.data})
                 console.log(response.data.data);
                 localStorage.setItem("access_token", response.data.data.accessToken);
                 localStorage.setItem("refresh_token", response.data.data.refreshToken);
-                console.log(response.data.data);
-                // // Axios에 토큰 저장
-                // setAuthToken(response.data.data.accessToken);
-
-                // farms 페이지로 이동
                 navigate('/farms');
             }
         } catch (error) {
@@ -56,10 +43,10 @@ const LoginPage = () => {
     };
 
     return (
-        <div>
+        <div className={styles.loginContainer}>
             <h2>로그인</h2>
             <form onSubmit={handleSubmit}>
-                <div>
+                <div className={styles.formGroup}>
                     <label>이메일</label>
                     <input
                         type="email"
@@ -69,7 +56,7 @@ const LoginPage = () => {
                         required
                     />
                 </div>
-                <div>
+                <div className={styles.formGroup}>
                     <label>비밀번호</label>
                     <input
                         type="password"
@@ -79,7 +66,7 @@ const LoginPage = () => {
                         required
                     />
                 </div>
-                <button type="submit">로그인</button>
+                <button type="submit" className={styles.submitButton}>로그인</button>
             </form>
         </div>
     );

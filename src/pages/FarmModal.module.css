@@ -1,0 +1,89 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modalContent {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+}
+
+.modalHeader {
+    margin-bottom: 20px;
+
+    h2 {
+        color: #333;
+        margin: 0;
+    }
+}
+
+.formGroup {
+    margin-bottom: 15px;
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #555;
+    }
+
+    input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+
+        &:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+    }
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.primaryButton {
+    background-color: #007bff;
+    color: white;
+}
+
+.secondaryButton {
+    background-color: #6c757d;
+    color: white;
+}
+
+.cancelButton {
+    background-color: #dc3545;
+    color: white;
+}

@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../axios';
+import styles from './FarmDetail.module.css';
+import { Line } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const FarmDetailPage = () => {
     const location = useLocation();
@@ -14,6 +18,7 @@ const FarmDetailPage = () => {
         farmName: farmData.farmName,
         cropName: farmData.cropName,
     });
+    const [activeTab, setActiveTab] = useState('temperature');
 
     useEffect(() => {
         console.log(location.state.farmEnvironment); // 환경 데이터 확인용 로그
@@ -172,15 +177,62 @@ const FarmDetailPage = () => {
         }
     };
 
+    const tabs = [
+        { id: 'temperature', label: '온도' },
+        { id: 'humidity', label: '습도' },
+        { id: 'n', label: '질소' },
+        { id: 'p', label: '인' },
+        { id: 'k', label: '칼륨' },
+        { id: 'ph', label: 'pH' },
+        { id: 'rainfall', label: '강수량' },
+    ];
+
+    const getChartData = (dataKey) => {
+        const colors = {
+            temperature: 'rgb(255, 99, 132)',
+            humidity: 'rgb(54, 162, 235)',
+            n: 'rgb(75, 192, 192)',
+            p: 'rgb(255, 206, 86)',
+            k: 'rgb(153, 102, 255)',
+            ph: 'rgb(255, 159, 64)',
+            rainfall: 'rgb(201, 203, 207)'
+        };
+
+        return {
+            labels: environmentData.map(data => data.timestamp),
+            datasets: [
+                {
+                    label: tabs.find(tab => tab.id === dataKey).label,
+                    data: environmentData.map(data => data[dataKey]),
+                    borderColor: colors[dataKey],
+                    backgroundColor: colors[dataKey],
+                    tension: 0.1,
+                    fill: false
+                }
+            ]
+        };
+    };
+
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: { beginAtZero: true }
+        }
+    };
+
+
+
+
 
     return (
-        <div>
+        <div className={styles.farmDetailContainer}>
             <h2>농장: {farmData.farmName}</h2>
             <h3>작물: {farmData.cropName}</h3>
 
             <section>
                 <h3>농장 관리</h3>
-                <div>
+                <div className={styles.inputGroup}>
                     <label>농장 이름:</label>
                     <input
                         type="text"
@@ -188,7 +240,7 @@ const FarmDetailPage = () => {
                         onChange={(e) => setUpdateData({...updateData, farmName: e.target.value})}
                     />
                 </div>
-                <div>
+                <div className={styles.inputGroup}>
                     <label>작물 이름:</label>
                     <input
                         type="text"
@@ -196,16 +248,33 @@ const FarmDetailPage = () => {
                         onChange={(e) => setUpdateData({...updateData, cropName: e.target.value})}
                     />
                 </div>
-                <button onClick={handleUpdateFarm}>농장 업데이트</button>
-                <button onClick={handleDeleteFarm}>농장 삭제</button>
+                <button className={styles.button} onClick={handleUpdateFarm}>농장 업데이트</button>
+                <button className={`${styles.button} ${styles.deleteButton}`} onClick={handleDeleteFarm}>농장 삭제</button>
             </section>
 
-            {/* 기존 UI 그대로 유지 */}
+            <section>
+                <h3>환경 데이터 그래프</h3>
+                <div className={styles.tabContainer}>
+                    {tabs.map(tab => (
+                        <button
+                            key={tab.id}
+                            className={`${styles.tab} ${activeTab === tab.id ? styles.active : ''}`}
+                            onClick={() => setActiveTab(tab.id)}
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
+                </div>
+                <div className={styles.chartContainer}>
+                    <Line data={getChartData(activeTab)} options={chartOptions} />
+                </div>
+            </section>
+
             <section>
                 <h3>현재 환경 로그</h3>
                 {environmentData.length > 0 ? (
                     environmentData.map((env, index) => (
-                        <div key={index}>
+                        <div key={index} className={styles.environmentLog}>
                             <p><b>시간:</b> {env.timestamp}</p>
                             <p><b>N:</b> {env.n}, <b>P:</b> {env.p}, <b>K:</b> {env.k}</p>
                             <p><b>온도:</b> {env.temperature}°C, <b>습도:</b> {env.humidity}%</p>
@@ -221,23 +290,16 @@ const FarmDetailPage = () => {
                 <h3>기기 관리</h3>
                 {deviceData.length > 0 ? (
                     deviceData.map((device, index) => (
-                        <div key={index}>
-                            <p><b>기기:</b> {device.device}, <b>상태:</b> {device.status}</p>
+                        <div key={index} className={styles.deviceItem}>
+                            <p><b>{device.device}:</b> {device.status}</p>
                             <input
                                 type="number"
                                 placeholder="새로운 값"
-                                onChange={(e) =>
-                                    setDeviceValues({...deviceValues, [device.device]: e.target.value})
-                                }
+                                onChange={(e) => setDeviceValues({...deviceValues, [device.device]: e.target.value})}
                             />
                             <button
-                                onClick={() =>
-                                    handleDeviceControl(
-                                        device.device,
-                                        deviceValues[device.device],
-                                        device.deviceId // deviceId 전달
-                                    )
-                                }
+                                className={styles.button}
+                                onClick={() => handleDeviceControl(device.device, deviceValues[device.device], device.deviceId)}
                             >
                                 업데이트
                             </button>
@@ -247,9 +309,10 @@ const FarmDetailPage = () => {
                     <p>기기 정보가 없습니다.</p>
                 )}
             </section>
-
         </div>
     );
 };
+
+
 
 export default FarmDetailPage;

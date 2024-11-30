@@ -1,0 +1,108 @@
+.farmDetailContainer {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+
+    h2, h3 {
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    section {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .inputGroup {
+        margin-bottom: 15px;
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    }
+
+    .button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
+
+        &:hover {
+            background-color: #0056b3;
+        }
+    }
+
+    .deleteButton {
+        background-color: #dc3545;
+
+        &:hover {
+            background-color: #c82333;
+        }
+    }
+
+    .environmentLog {
+        background-color: #e9ecef;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+    }
+
+    .deviceItem {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+
+        input {
+            width: 100px;
+            margin-right: 10px;
+        }
+    }
+
+    .chartContainer {
+        height: 400px;
+        margin-bottom: 20px;
+    }
+}
+
+.tabContainer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.tab {
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border: none;
+    cursor: pointer;
+    margin: 0 5px;
+    border-radius: 5px;
+
+    &:hover {
+        background-color: #e0e0e0;
+    }
+
+    &.active {
+        background-color: #007bff;
+        color: white;
+    }
+}
+
+.chartContainer {
+    height: 400px;
+    margin-bottom: 20px;
+}

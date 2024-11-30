@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import api from '../axios'; // 커스텀 axios 객체를 import
+import register from './Register.module.css';
 
 const RegisterPage = () => {
     const [formData, setFormData] = useState({
@@ -30,10 +31,10 @@ const RegisterPage = () => {
     };
 
     return (
-        <div>
+        <div className={register.registerContainer}>
             <h2>회원가입</h2>
             <form onSubmit={handleSubmit}>
-                <div>
+                <div className={register.formGroup}>
                     <label>아이디</label>
                     <input
                         type="text"
@@ -43,7 +44,7 @@ const RegisterPage = () => {
                         required
                     />
                 </div>
-                <div>
+                <div className={register.formGroup}>
                     <label>이메일</label>
                     <input
                         type="email"
@@ -53,7 +54,7 @@ const RegisterPage = () => {
                         required
                     />
                 </div>
-                <div>
+                <div className={register.formGroup}>
                     <label>비밀번호</label>
                     <input
                         type="password"
@@ -63,7 +64,7 @@ const RegisterPage = () => {
                         required
                     />
                 </div>
-                <button type="submit">회원가입</button>
+                <button type="submit" className={register.submitButton}>회원가입</button>
             </form>
         </div>
     );
